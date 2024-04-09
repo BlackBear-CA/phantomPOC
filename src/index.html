@@ -4,17 +4,87 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat with LangChain</title>
-    <link rel="stylesheet" href="style.css"> <!-- Ensure you have a CSS file for styling -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="chat-box">
         <div id="sidebar-title">Fire-Watch</div>
-        <div id="sidebar-subtitle">by PhanomAIP</div>
-        <!-- Chat history will be displayed here -->
+        <div id="sidebar-subtitle">by PhantomAIP</div>
+        <div id="chat-history"></div>
     </div>
     <input type="text" id="message-input" placeholder="What can I do for you today?">
     <button id="send-btn">Send</button>
 
-    <script src="script.js"></script> <!-- Ensure you have a JavaScript file for functionality -->
+    <!-- File input for uploading CSV/XLSX files -->
+    <input type="file" id="file-input" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+    <button id="upload-btn">Upload and Analyze</button>
+
+    <script>
+        var chatHistory = document.getElementById('chat-history');
+        var messageInput = document.getElementById('message-input');
+        var sendButton = document.getElementById('send-btn');
+        var uploadButton = document.getElementById('upload-btn');
+        var fileInput = document.getElementById('file-input');
+
+        function updateChatHistory(message, isUserMessage) {
+            var messageDiv = document.createElement('div');
+            messageDiv.textContent = message;
+            messageDiv.className = isUserMessage ? 'user-message' : 'langchain-message';
+            chatHistory.appendChild(messageDiv);
+        }
+
+        function sendMessageToLangchain(message) {
+            fetch('/api/langchain-function', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ prompt: message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                updateChatHistory(data.response, false);
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        sendButton.addEventListener('click', function() {
+            var userMessage = messageInput.value;
+            if (userMessage) {
+                updateChatHistory(userMessage, true);
+                sendMessageToLangchain(userMessage);
+                messageInput.value = '';
+            }
+        });
+
+        messageInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendButton.click();
+            }
+        });
+
+        // Event listener for the Upload and Analyze button
+        uploadButton.addEventListener('click', function() {
+            var file = fileInput.files[0];
+            if (file) {
+                var formData = new FormData();
+                formData.append('file', file);
+
+                // Make sure to change the API endpoint to your actual Azure Function endpoint
+                fetch('/api/process-file', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Assuming 'data' contains the insights or chat response from Langchain
+                    updateChatHistory(data.insights, false);
+                })
+                .catch(error => console.error('Error uploading file:', error));
+            } else {
+                updateChatHistory('No file selected for upload.', false);
+            }
+        });
+    </script>
 </body>
 </html>

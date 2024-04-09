@@ -1,0 +1,6 @@
+flask
+pandas
+openpyxl
+langchain-community
+langchain-openai
+gunicorn

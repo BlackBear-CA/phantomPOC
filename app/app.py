@@ -1,8 +1,10 @@
 from flask import Flask, request, jsonify
 import pandas as pd
+from flask_cors import CORS
 from langchain.llms import OpenAI
 
 app = Flask(__name__)
+CORS(app, origins=['http://phantomaip.azurewebsites.net', 'https://phantomaip.azurewebsites.net'])
 
 # Initialize LangChain with your actual OpenAI API key
 # Make sure to secure your API key properly, consider using environment variables for production
@@ -60,6 +62,11 @@ def process_data():
         return jsonify({'insights': insights, 'conversation': conversation}), 200
     else:
         return jsonify({'error': 'Failed to read the dataset or unsupported format.'}), 400
+
+# Root URL route
+@app.route('/')
+def index():
+    return 'Welcome to the Flask backend API!'
 
 if __name__ == '__main__':
     app.run(debug=True)

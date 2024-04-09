@@ -23,7 +23,7 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }} # Used for Github integrations (i.e., PR comments)
           action: "upload"
           # Adjust the app_location to point to the 'src' directory inside 'phantomPOC'
-          app_location: "phantomPOC/src" # Path to your static files
+          app_location: "src" # Path to your static files
           api_location: "" # Set this if you have an API
           output_location: "" # Set this if your app has a build step that outputs files to a directory
           ###### End of Repository/Build Configurations ######

@@ -34,6 +34,7 @@
         }
 
         function sendMessageToLangchain(message) {
+            // Ensure this endpoint matches your Flask API route for chat functionality
             fetch('/api/langchain-function', {
                 method: 'POST',
                 headers: {
@@ -70,7 +71,7 @@
                 var formData = new FormData();
                 formData.append('file', file);
 
-                // Make sure to change the API endpoint to your actual Azure Function endpoint
+                // Ensure this endpoint matches your Flask API route for file processing
                 fetch('/api/process-file', {
                     method: 'POST',
                     body: formData
@@ -88,3 +89,4 @@
     </script>
 </body>
 </html>
+

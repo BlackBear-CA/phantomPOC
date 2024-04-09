@@ -1,3 +1,9 @@
+
+flask
+pandas
+openpyxl
+langchain-community
+langchain-openai
 flask
 pandas
 openpyxl

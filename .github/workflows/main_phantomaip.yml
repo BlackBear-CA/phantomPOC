@@ -26,7 +26,7 @@ jobs:
       - name: Run Python tests
         run: |
           pip install pytest
-          pytest tests/
+          pytest app/
 
       - name: Zip Python application and static files for deployment
         run: |

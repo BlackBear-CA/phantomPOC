@@ -9,7 +9,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
 
@@ -26,11 +25,11 @@ jobs:
       - name: Run Python tests
         run: |
           pip install pytest
-          pytest
+          pytest tests/
 
       - name: Zip Python application and static files for deployment
         run: |
-          zip -r release.zip . -x '*.git*' -x '*__pycache__*' -x '*.github*'
+          zip -r release.zip . -x '*.git*' -x '*__pycache__*' -x '*node_modules*' -x '*env*' -x '*.github*'
 
       - name: Upload artifact for deployment jobs
         uses: actions/upload-artifact@v3

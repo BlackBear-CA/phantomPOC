@@ -11,28 +11,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Set up Python version
-        uses: actions/setup-python@v2
+      - name: Set up Python
+        uses: actions/setup-python@v3
         with:
           python-version: '3.10'
 
-      - name: Install Python dependencies
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r requirements.txt pytest
 
-      - name: Run Python tests
-        run: |
-          pip install pytest
-          pytest app/
+      - name: Run tests
+        run: pytest app/
 
-      - name: Zip Python application and static files for deployment
+      - name: Zip application for deployment
         run: |
           zip -r release.zip . -x '*.git*' -x '*__pycache__*' -x '*node_modules*' -x '*env*' -x '*.github*'
 
-      - name: Upload artifact for deployment jobs
+      - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
           name: python-app
@@ -46,12 +44,12 @@ jobs:
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
-      - name: Download artifact from build job
+      - name: Download artifact
         uses: actions/download-artifact@v2
         with:
           name: python-app
 
-      - name: Unzip artifact for deployment
+      - name: Unzip artifact
         run: unzip release.zip
 
       - name: Login to Azure

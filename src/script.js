@@ -1,27 +1,18 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const sendButton = document.getElementById('send-btn');
-    const uploadButton = document.getElementById('upload-btn');
-    const messageInput = document.getElementById('message-input');
-    const fileInput = document.getElementById('file-input');
+    const chatInput = document.getElementById('chat-input');
+    const sendButton = document.getElementById('send-button');
+    const fileUpload = document.getElementById('file-upload');
+    const chatHistory = document.getElementById('chat-history');
 
-    // Send text message to Langchain
-    sendButton.addEventListener('click', function() {
-        const message = messageInput.value.trim();
-        if (message) {
-            sendMessageToLangchain(message);
-            messageInput.value = ''; // Clear input after sending
-        }
-    });
+    // Function to update chat history
+    function updateChatHistory(message, isUser) {
+        const messageElement = document.createElement('div');
+        messageElement.textContent = message;
+        messageElement.className = isUser ? 'user-message' : 'bot-message'; // Add class for styling
+        chatHistory.appendChild(messageElement);
+    }
 
-    // Upload file and get insights from Langchain
-    uploadButton.addEventListener('click', function() {
-        const file = fileInput.files[0];
-        if (file) {
-            uploadFile(file);
-        }
-    });
-
-    // Send a message to Langchain and display response
+    // Function to send messages to Langchain
     function sendMessageToLangchain(message) {
         fetch('/api/langchain-function', {
             method: 'POST',
@@ -32,46 +23,46 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(response => response.json())
         .then(data => {
-            displayMessage(message, 'You');
-            displayMessage(data.message, 'Langchain'); // Assuming 'data.message' contains the response
+            updateChatHistory(data.response, false);
         })
         .catch(error => console.error('Error:', error));
     }
 
-    // Upload file to the server for processing
-    function uploadFile(file) {
-        const formData = new FormData();
-        formData.append('file', file);
+    // Send message on button click
+    sendButton.addEventListener('click', () => {
+        const userMessage = chatInput.value.trim();
+        if (userMessage) {
+            updateChatHistory(userMessage, true);
+            sendMessageToLangchain(userMessage);
+            chatInput.value = '';
+        }
+    });
 
-        fetch('/api/process-file', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            // Assuming 'data.insights' contains insights from the file
-            updateChatHistory(data.insights, false); // Update chat with insights
-        })
-        .catch(error => console.error('Error uploading file:', error));
-    }
+    // Send message on pressing 'Enter'
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            sendButton.click();
+        }
+    });
 
-    // Display message in chat history
-    function displayMessage(message, sender) {
-        const chatHistory = document.getElementById('chat-history');
-        const msgDiv = document.createElement('div');
-        msgDiv.textContent = `${sender}: ${message}`;
-        msgDiv.className = 'message'; // Apply the message class for styling
-        chatHistory.appendChild(msgDiv); // Add the new message div to the chat history
-    }
+    // Function to handle file uploads
+    fileUpload.addEventListener('change', () => {
+        const file = fileUpload.files[0];
+        if (file) {
+            const formData = new FormData();
+            formData.append('file', file);
 
-    // Update chat history with insights or responses
-    function updateChatHistory(message, isUserMessage) {
-        const chatHistory = document.getElementById('chat-history');
-        const messageDiv = document.createElement('div');
-        messageDiv.textContent = message;
-        messageDiv.className = isUserMessage ? 'user-message' : 'langchain-message';
-        chatHistory.appendChild(messageDiv);
-    }
+            fetch('/api/process-file', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                updateChatHistory(data.insights, false);
+            })
+            .catch(error => console.error('Error uploading file:', error));
+        } else {
+            updateChatHistory('No file selected for upload.', false);
+        }
+    });
 });
-
-

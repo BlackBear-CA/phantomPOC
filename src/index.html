@@ -2,91 +2,43 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat with LangChain</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Firewatch Chat Interface</title>
+    <!-- Google Font inclusion for Roboto Slab -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet"> 
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div id="chat-box">
-        <div id="sidebar-title">Fire-Watch</div>
-        <div id="sidebar-subtitle">by PhantomAIP</div>
-        <div id="chat-history"></div>
+
+<div id="chat-interface">
+    <header>
+        <h1>Firewatch</h1>
+        <nav>
+            <a href="#" id="phantomAPI">PhantomAPI</a>
+            <a href="#" id="firewatchLink">Firewatch</a>
+            <a href="#" id="catalyst">Catalyst</a>
+            <div id="upload-container">
+                <label for="file-upload" id="file-upload-label">Upload</label>
+                <input type="file" id="file-upload" accept=".pdf, .csv, .xlsx, .doc, .docx" style="display: none;" />
+            </div>
+            <a href="#" id="loginLink">
+                <img src="login-icon.png" alt="Log In" id="loginIcon" />
+                Log In
+            </a>
+        </nav>
+    </header>
+    
+    <div id="chat-history">
+        <!-- Chat history will go here -->
     </div>
-    <input type="text" id="message-input" placeholder="What can I do for you today?">
-    <button id="send-btn">Send</button>
+    
+    <div id="chat-box">
+        <div id="chat-input-area">
+            <input type="text" id="chat-input" placeholder="How can I help you today?" />
+            <button id="send-button">Send</button>
+        </div>
+    </div>
+</div>
 
-    <!-- File input for uploading CSV/XLSX files -->
-    <input type="file" id="file-input" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
-    <button id="upload-btn">Upload and Analyze</button>
-
-    <script>
-        var chatHistory = document.getElementById('chat-history');
-        var messageInput = document.getElementById('message-input');
-        var sendButton = document.getElementById('send-btn');
-        var uploadButton = document.getElementById('upload-btn');
-        var fileInput = document.getElementById('file-input');
-
-        function updateChatHistory(message, isUserMessage) {
-            var messageDiv = document.createElement('div');
-            messageDiv.textContent = message;
-            messageDiv.className = isUserMessage ? 'user-message' : 'langchain-message';
-            chatHistory.appendChild(messageDiv);
-        }
-
-        function sendMessageToLangchain(message) {
-            // Ensure this endpoint matches your Flask API route for chat functionality
-            fetch('/api/langchain-function', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ prompt: message })
-            })
-            .then(response => response.json())
-            .then(data => {
-                updateChatHistory(data.response, false);
-            })
-            .catch(error => console.error('Error:', error));
-        }
-
-        sendButton.addEventListener('click', function() {
-            var userMessage = messageInput.value;
-            if (userMessage) {
-                updateChatHistory(userMessage, true);
-                sendMessageToLangchain(userMessage);
-                messageInput.value = '';
-            }
-        });
-
-        messageInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                sendButton.click();
-            }
-        });
-
-        // Event listener for the Upload and Analyze button
-        uploadButton.addEventListener('click', function() {
-            var file = fileInput.files[0];
-            if (file) {
-                var formData = new FormData();
-                formData.append('file', file);
-
-                // Ensure this endpoint matches your Flask API route for file processing
-                fetch('/api/process-file', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    // Assuming 'data' contains the insights or chat response from Langchain
-                    updateChatHistory(data.insights, false);
-                })
-                .catch(error => console.error('Error uploading file:', error));
-            } else {
-                updateChatHistory('No file selected for upload.', false);
-            }
-        });
-    </script>
+<script src="script.js"></script>
 </body>
 </html>
-

@@ -1,78 +1,97 @@
-body {
+body, html {
+    height: 100%;
     margin: 0;
+    font-family: 'Roboto Slab', serif; /* Roboto Slab for a clean, serif look */
+}
+
+#chat-interface {
     display: flex;
     flex-direction: column;
+    height: 100%;
+}
+
+header {
+    display: flex;
     justify-content: space-between;
-    height: 100vh;
-    background-color: #f0f0f0;
-    position: relative;
+    align-items: center;
+    padding: 10px;
+    background-color: #333;
+    color: #fff;
+}
+
+header h1 {
+    margin: 0;
+    font-weight: 700; /* Roboto Slab bold for headings */
+}
+
+nav a {
+    color: #fff;
+    text-decoration: none;
+    margin-left: 15px;
+    display: flex;
+    align-items: center;
+}
+
+nav #loginLink {
+    cursor: pointer;
+}
+
+#loginIcon {
+    width: 25px;
+    margin-right: 8px;
+}
+
+#chat-history {
+    flex-grow: 1;
+    overflow-y: auto;
+    background-color: #f5f5f5;
+    padding: 20px;
 }
 
 #chat-box {
-    height: 100%;
-    overflow-y: auto;
+    background-color: #fff;
+    border-top: 1px solid #ddd;
     padding: 10px;
-    position: absolute;
-    left: 3in; /* Adjusted sidebar width */
-    top: 0;
-    bottom: 0;
-    width: calc(100% - 3in); /* Adjusted chat box width */
-    background-color: #e5f5f9; /* Light blue background for the chat area */
-    z-index: 1; /* Ensure it overlays the chat messages if they overlap */
 }
 
-#message-input {
-    width: calc(100% - 6rem); /* Shorter message input box */
-    padding: 10px 20px;
-    margin: 0 2rem 2rem 3.5in; /* Adjusted margin to center input box */
-    border: 1px solid #ddd;
+#chat-input-area {
+    display: flex;
+}
+
+#chat-input {
+    flex-grow: 1;
+    border: 1px solid #ccc;
     border-radius: 5px;
-    position: fixed;
-    bottom: 12px; /* Position at the bottom of the page */
-    background-color: white;
-    font-family: Arial, sans-serif; /* Set font family */
-    z-index: 2; /* Ensure it overlays the sidebar */
+    padding: 10px;
+    margin-right: 5px;
 }
 
-#message-input::placeholder {
-    color: #999; /* Placeholder color */
-}
-
-#send-btn {
-    background-color: #007bff;
-    color: white;
+#send-button {
+    background-color: #333;
+    color: #fff;
     border: none;
     padding: 10px 20px;
     cursor: pointer;
-    position: fixed;
-    right: 20px;
-    bottom: 12px; /* Align with input box */
-    z-index: 2; /* Ensure it overlays the sidebar */
+    border-radius: 5px;
 }
 
-#sidebar {
-    width: 3in; /* Width of the sidebar */
-    height: 100vh; /* Adjusted to cover the entire height */
-    position: fixed;
-    top: 0;
-    left: 0;
-    background-color: #e5f5f9; /* Light blue background for the sidebar */
-    z-index: 1; /* Ensure it's behind the chat area */
-    padding: 20px; /* Add padding for content */
+#send-button:hover {
+    background-color: #555;
 }
 
-#sidebar-title {
-    font-family: 'Space Mono', monospace; /* Set font family */
-    font-size: 20px;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 10px; /* Add space below the title */
+nav #upload-container {
+    display: inline-block;
+    margin-left: 15px;
 }
 
-#sidebar-subtitle {
-    font-family: Arial, sans-serif; /* Set font family */
-    font-size: 14px;
-    text-align: center;
-    color: #555; /* Adjust text color */
-    margin-bottom: 20px; /* Add space below the subtitle */
+#file-upload-label {
+    background-color: #666;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#file-upload-label:hover {
+    background-color: #777;
 }

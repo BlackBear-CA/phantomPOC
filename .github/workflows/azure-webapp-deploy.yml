@@ -1,0 +1,31 @@
+name: Deploy to Azure Web App
+
+on:
+  push:
+    branches:
+      - master # Set this to the branch that you want to deploy from
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: '14.x'
+
+    - name: npm install and build
+      run: |
+        npm install
+        npm run build # If you have a build script defined in your package.json
+
+    - name: 'Deploy to Azure Web App'
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'phantomaip' # Your Azure Web App name
+        slot-name: 'production' # If you are deploying to a specific slot
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }} # Set in your repository secrets
+        package: '.' # The path to your web app project directory or the location of the build artifacts to deploy

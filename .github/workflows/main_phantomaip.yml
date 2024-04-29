@@ -18,7 +18,11 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install build dependencies for lxml
+      - name: Update pip, setuptools, and wheel
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+
+      - name: Install build dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y libxml2-dev libxslt-dev
@@ -76,4 +80,3 @@ jobs:
         with:
           app-name: 'PhantomAIP'
           slot-name: 'Production'
-

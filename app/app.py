@@ -12,6 +12,24 @@ llm = OpenAI(api_key="your_openai_api_key")
 
 # Function to read Excel and CSV datasets
 def read_dataset(file):
+    if file.filename.endswith('.docx'):
+        try:
+            from docx import Document
+            doc = Document(file)
+            full_text = []
+            for para in doc.paragraphs:
+                full_text.append(para.text)
+            return '\n'.join(full_text)
+        except Exception as e:
+            print(f'Failed to read the DOCX file: {e}')
+    elif file.filename.endswith('.pdf'):
+        try:
+            import pdfplumber
+            with pdfplumber.open(file) as pdf:
+                full_text = [page.extract_text() for page in pdf.pages]
+            return '\n'.join(filter(None, full_text))
+        except Exception as e:
+            print(f'Failed to read the PDF file: {e}')
     if file.filename.endswith('.xlsx'):
         try:
             return pd.read_excel(file, engine='openpyxl')
